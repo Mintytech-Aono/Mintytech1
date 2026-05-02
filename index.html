@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Minty Tech | Web制作 & SNS運用代行</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Sans+JP:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── CSS Variables ─── */
+    :root {
+      --mint:        #3EB489;
+      --mint-light:  #A8E6CF;
+      --mint-pale:   #D4F5E9;
+      --choco:       #3B1F0E;
+      --choco-mid:   #6B3A2A;
+      --choco-light: #A0673A;
+      --cream:       #F9F3EC;
+      --white:       #FFFFFF;
+      --text:        #2C1A0E;
+      --text-muted:  #7A5C48;
+      --accent:      #5ECBA1;
+      --grad-hero: linear-gradient(135deg, #0D2B1F 0%, #1A3D2B 40%, #2A1506 100%);
+    }
+
+    /* ─── Reset ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ─── Custom Cursor ─── */
+    .cursor {
+      width: 12px; height: 12px;
+      background: var(--mint);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%,-50%);
+      transition: transform 0.1s ease, background 0.3s;
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border: 1.5px solid var(--mint);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9998;
+      transform: translate(-50%,-50%);
+      transition: transform 0.25s ease, opacity 0.3s;
+      opacity: 0.6;
+    }
+
+    /* ─── Navigation ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.4rem 5%;
+      backdrop-filter: blur(14px);
+      background: rgba(11,28,18,0.7);
+      border-bottom: 1px solid rgba(62,180,137,0.15);
+      transition: background 0.4s;
+    }
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: var(--mint-light);
+      letter-spacing: 0.02em;
+    }
+    .nav-logo span { color: var(--choco-light); font-style: italic; }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      color: rgba(168,230,207,0.7);
+      text-decoration: none;
+      font-size: 0.82rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-family: 'Space Mono', monospace;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover { color: var(--mint-light); }
+    .nav-cta {
+      background: var(--mint);
+      color: var(--choco);
+      padding: 0.55rem 1.4rem;
+      border-radius: 2px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.78rem;
+      text-decoration: none;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .nav-cta:hover { background: var(--mint-light); transform: translateY(-1px); }
+
+    /* ─── Hamburger ─── */
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--mint-light); transition: 0.3s; }
+
+    /* ─── Hero ─── */
+    #hero {
+      min-height: 100vh;
+      background: var(--grad-hero);
+      display: flex; align-items: center;
+      position: relative; overflow: hidden;
+      padding: 0 5%;
+    }
+
+    /* Floating mint blobs */
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.18;
+      animation: blobFloat 8s ease-in-out infinite;
+    }
+    .blob-1 { width: 500px; height: 500px; background: var(--mint); top: -150px; right: -100px; animation-delay: 0s; }
+    .blob-2 { width: 350px; height: 350px; background: var(--choco-light); bottom: -80px; left: -80px; animation-delay: -3s; }
+    .blob-3 { width: 250px; height: 250px; background: var(--mint-light); top: 40%; left: 40%; animation-delay: -5s; }
+    @keyframes blobFloat {
+      0%,100% { transform: translateY(0) scale(1); }
+      50%      { transform: translateY(-30px) scale(1.05); }
+    }
+
+    /* Grid overlay */
+    #hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(62,180,137,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(62,180,137,0.04) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+    }
+
+    .hero-content { position: relative; z-index: 2; max-width: 720px; }
+    .hero-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      color: var(--mint);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 0.8rem;
+    }
+    .hero-tag::before {
+      content: '';
+      display: block; width: 40px; height: 1px;
+      background: var(--mint);
+    }
+    .hero-h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 7vw, 6rem);
+      line-height: 1.05;
+      color: var(--white);
+      margin-bottom: 1.5rem;
+    }
+    .hero-h1 em {
+      font-style: italic;
+      color: var(--mint-light);
+    }
+    .hero-h1 .choco-word {
+      color: var(--choco-light);
+    }
+    .hero-desc {
+      font-size: 1.05rem;
+      line-height: 1.9;
+      color: rgba(168,230,207,0.65);
+      max-width: 480px;
+      margin-bottom: 3rem;
+      font-weight: 300;
+    }
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--mint);
+      color: var(--choco);
+      padding: 0.9rem 2.2rem;
+      border-radius: 2px;
+      font-family: 'Space Mono', monospace;
+      font-weight: 700; font-size: 0.82rem;
+      text-decoration: none; letter-spacing: 0.1em;
+      transition: all 0.3s;
+      position: relative; overflow: hidden;
+    }
+    .btn-primary::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0.15);
+      transform: translateX(-100%);
+      transition: transform 0.4s;
+    }
+    .btn-primary:hover::after { transform: translateX(0); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(62,180,137,0.4); }
+    .btn-outline {
+      border: 1px solid rgba(168,230,207,0.4);
+      color: var(--mint-light);
+      padding: 0.9rem 2.2rem;
+      border-radius: 2px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.82rem; letter-spacing: 0.1em;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+    .btn-outline:hover { background: rgba(62,180,137,0.1); border-color: var(--mint); }
+
+    /* Scroll indicator */
+    .scroll-ind {
+      position: absolute; bottom: 2.5rem; left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+      color: rgba(168,230,207,0.4);
+      font-family: 'Space Mono', monospace; font-size: 0.65rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      animation: scrollBounce 2s ease-in-out infinite;
+    }
+    .scroll-ind::after {
+      content: '';
+      display: block; width: 1px; height: 48px;
+      background: linear-gradient(to bottom, rgba(62,180,137,0.5), transparent);
+    }
+    @keyframes scrollBounce {
+      0%,100% { transform: translateX(-50%) translateY(0); }
+      50%      { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* ─── Section Common ─── */
+    section { padding: 7rem 5%; }
+    .section-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem; letter-spacing: 0.2em;
+      color: var(--mint); text-transform: uppercase;
+      margin-bottom: 1rem;
+      display: flex; align-items: center; gap: 0.7rem;
+    }
+    .section-tag::before {
+      content: '';
+      display: block; width: 28px; height: 1px;
+      background: var(--mint);
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      line-height: 1.15;
+      color: var(--choco);
+      margin-bottom: 1.5rem;
+    }
+    .section-title em { color: var(--mint); font-style: italic; }
+
+    /* ─── Services ─── */
+    #services { background: var(--cream); }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5px;
+      margin-top: 4rem;
+      border: 1.5px solid rgba(62,180,137,0.2);
+    }
+    .service-card {
+      background: var(--white);
+      padding: 2.8rem 2.5rem;
+      position: relative; overflow: hidden;
+      transition: all 0.4s;
+      cursor: default;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 3px; height: 0;
+      background: var(--mint);
+      transition: height 0.4s;
+    }
+    .service-card:hover { background: #f0fdf7; }
+    .service-card:hover::before { height: 100%; }
+    .service-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem; font-weight: 700;
+      color: var(--mint-pale);
+      line-height: 1;
+      margin-bottom: 1rem;
+      transition: color 0.4s;
+    }
+    .service-card:hover .service-num { color: rgba(62,180,137,0.25); }
+    .service-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    .service-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: var(--choco);
+      margin-bottom: 0.8rem;
+    }
+    .service-card p {
+      font-size: 0.88rem;
+      line-height: 1.85;
+      color: var(--text-muted);
+    }
+    .service-tags {
+      display: flex; flex-wrap: wrap; gap: 0.4rem;
+      margin-top: 1.4rem;
+    }
+    .service-tags span {
+      background: var(--mint-pale);
+      color: var(--mint);
+      font-size: 0.7rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 1px;
+      font-family: 'Space Mono', monospace;
+      letter-spacing: 0.05em;
+    }
+
+    /* ─── About / Feature Strip ─── */
+    #about {
+      background: var(--choco);
+      position: relative; overflow: hidden;
+    }
+    #about::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(62,180,137,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(62,180,137,0.05) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .about-inner {
+      position: relative; z-index: 2;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
+    }
+    .about-text .section-title { color: var(--mint-light); }
+    .about-text .section-title em { color: var(--choco-light); }
+    .about-desc {
+      color: rgba(168,230,207,0.65);
+      font-size: 0.95rem; line-height: 2;
+      font-weight: 300;
+    }
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+    .stat {
+      border-left: 2px solid var(--mint);
+      padding-left: 1.2rem;
+    }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      color: var(--mint-light);
+      line-height: 1;
+    }
+    .stat-num span { font-size: 1.2rem; }
+    .stat-label {
+      font-size: 0.75rem;
+      color: rgba(168,230,207,0.5);
+      font-family: 'Space Mono', monospace;
+      letter-spacing: 0.1em;
+      margin-top: 0.3rem;
+    }
+    .about-visual {
+      position: relative;
+      height: 400px;
+    }
+    .choco-card {
+      position: absolute;
+      background: rgba(62,180,137,0.08);
+      border: 1px solid rgba(62,180,137,0.2);
+      border-radius: 4px;
+      padding: 1.8rem;
+      backdrop-filter: blur(10px);
+      transition: transform 0.5s;
+    }
+    .choco-card:hover { transform: translateY(-6px); }
+    .choco-card-1 { top: 0; left: 0; right: 60px; }
+    .choco-card-2 { bottom: 0; left: 60px; right: 0; }
+    .choco-card h4 {
+      color: var(--mint-light);
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem; margin-bottom: 0.5rem;
+    }
+    .choco-card p {
+      color: rgba(168,230,207,0.5);
+      font-size: 0.8rem; line-height: 1.7;
+    }
+    .card-icon { font-size: 1.6rem; margin-bottom: 0.7rem; }
+
+    /* ─── Process ─── */
+    #process { background: #F2EDE6; }
+    .process-steps {
+      display: flex;
+      gap: 0;
+      margin-top: 4rem;
+      position: relative;
+    }
+    .process-steps::before {
+      content: '';
+      position: absolute;
+      top: 2.5rem; left: 2.5rem; right: 2.5rem;
+      height: 1px;
+      background: linear-gradient(to right, var(--mint), var(--choco-light), var(--mint));
+      z-index: 0;
+    }
+    .step {
+      flex: 1;
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center;
+      padding: 0 1rem;
+      position: relative; z-index: 1;
+      cursor: default;
+    }
+    .step-dot {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: var(--white);
+      border: 2px solid var(--mint);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.5rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.8rem; font-weight: 700;
+      color: var(--mint);
+      transition: all 0.3s;
+      position: relative; z-index: 2;
+    }
+    .step:hover .step-dot {
+      background: var(--mint); color: var(--choco);
+      transform: scale(1.2);
+    }
+    .step h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem; color: var(--choco);
+      margin-bottom: 0.5rem;
+    }
+    .step p {
+      font-size: 0.8rem; color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    /* ─── Works / Portfolio ─── */
+    #works { background: var(--cream); }
+    .works-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 4rem;
+    }
+    .work-card {
+      position: relative; overflow: hidden;
+      border-radius: 4px;
+      aspect-ratio: 4/3;
+      background: var(--choco);
+      cursor: pointer;
+    }
+    .work-card:nth-child(1) { grid-column: span 2; }
+    .work-bg {
+      position: absolute; inset: 0;
+      transition: transform 0.6s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .work-card:hover .work-bg { transform: scale(1.05); }
+    /* Decorative work card backgrounds */
+    .work-card:nth-child(1) .work-bg {
+      background: linear-gradient(135deg, #0D2B1F, #1E5C3A);
+    }
+    .work-card:nth-child(2) .work-bg {
+      background: linear-gradient(135deg, #3B1F0E, #6B3A2A);
+    }
+    .work-card:nth-child(3) .work-bg {
+      background: linear-gradient(135deg, #0a1f14, #1A3D2B);
+    }
+    .work-card:nth-child(4) .work-bg {
+      background: linear-gradient(135deg, #2A1506, #5C3015);
+    }
+    .work-placeholder {
+      font-size: 4rem; opacity: 0.3;
+    }
+    .work-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(11,28,18,0.95) 0%, transparent 60%);
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 1.8rem;
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all 0.4s;
+    }
+    .work-card:hover .work-overlay { opacity: 1; transform: translateY(0); }
+    .work-cat {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem; letter-spacing: 0.2em;
+      color: var(--mint); text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+    .work-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem; color: var(--white);
+    }
+    /* Always show category label */
+    .work-label {
+      position: absolute; top: 1rem; left: 1rem;
+      background: rgba(62,180,137,0.2);
+      border: 1px solid rgba(62,180,137,0.3);
+      color: var(--mint-light);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem; letter-spacing: 0.15em;
+      padding: 0.3rem 0.7rem;
+      border-radius: 1px;
+    }
+
+    /* ─── Contact ─── */
+    #contact {
+      background: var(--choco);
+      position: relative; overflow: hidden;
+    }
+    #contact::after {
+      content: 'CONTACT';
+      position: absolute;
+      bottom: -2rem; right: -1rem;
+      font-family: 'Playfair Display', serif;
+      font-size: 10rem; font-weight: 700;
+      color: rgba(62,180,137,0.04);
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .contact-inner {
+      max-width: 700px; margin: 0 auto; text-align: center;
+      position: relative; z-index: 2;
+    }
+    .contact-inner .section-tag { justify-content: center; }
+    .contact-inner .section-tag::before { display: none; }
+    .contact-inner .section-title { color: var(--mint-light); }
+    .contact-inner .section-title em { color: var(--choco-light); }
+    .contact-desc {
+      color: rgba(168,230,207,0.55);
+      font-size: 0.95rem; line-height: 2;
+      margin-bottom: 3rem;
+    }
+    .contact-form {
+      display: flex; flex-direction: column; gap: 1rem;
+      text-align: left;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-group label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem; letter-spacing: 0.15em;
+      color: var(--mint); text-transform: uppercase;
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      background: rgba(62,180,137,0.06);
+      border: 1px solid rgba(62,180,137,0.2);
+      color: var(--mint-light);
+      padding: 0.85rem 1rem;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 0.9rem;
+      border-radius: 2px;
+      outline: none;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: var(--mint);
+      background: rgba(62,180,137,0.1);
+    }
+    .form-group textarea { resize: vertical; min-height: 130px; }
+    .form-group select option { background: var(--choco); }
+    .form-submit {
+      background: var(--mint);
+      color: var(--choco);
+      border: none;
+      padding: 1.1rem 3rem;
+      font-family: 'Space Mono', monospace;
+      font-weight: 700; font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      border-radius: 2px;
+      align-self: center;
+      margin-top: 0.5rem;
+      transition: all 0.3s;
+      position: relative; overflow: hidden;
+    }
+    .form-submit:hover {
+      background: var(--mint-light);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(62,180,137,0.4);
+    }
+    .success-msg {
+      display: none;
+      background: rgba(62,180,137,0.15);
+      border: 1px solid rgba(62,180,137,0.3);
+      color: var(--mint-light);
+      padding: 1rem;
+      border-radius: 2px;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    /* ─── Footer ─── */
+    footer {
+      background: #070F0A;
+      padding: 3rem 5%;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 1.5rem;
+    }
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      color: var(--mint-light);
+    }
+    .footer-logo span { color: var(--choco-light); font-style: italic; }
+    .footer-links { display: flex; gap: 2rem; }
+    .footer-links a {
+      color: rgba(168,230,207,0.4);
+      text-decoration: none;
+      font-size: 0.75rem;
+      font-family: 'Space Mono', monospace;
+      letter-spacing: 0.1em;
+      transition: color 0.3s;
+    }
+    .footer-links a:hover { color: var(--mint); }
+    .footer-copy {
+      color: rgba(168,230,207,0.25);
+      font-size: 0.72rem;
+      font-family: 'Space Mono', monospace;
+    }
+
+    /* ─── Fade-in Animation ─── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 900px) {
+      .about-inner { grid-template-columns: 1fr; gap: 3rem; }
+      .about-visual { display: none; }
+      .works-grid { grid-template-columns: 1fr 1fr; }
+      .work-card:nth-child(1) { grid-column: span 2; }
+      .process-steps::before { display: none; }
+      .process-steps { flex-direction: column; gap: 2rem; }
+      .step { flex-direction: row; text-align: left; gap: 1.2rem; align-items: flex-start; }
+    }
+    @media (max-width: 640px) {
+      .nav-links, .nav-cta { display: none; }
+      .hamburger { display: flex; }
+      .nav-links.open {
+        display: flex; flex-direction: column;
+        position: fixed; inset: 0; top: 64px;
+        background: rgba(11,28,18,0.97);
+        align-items: center; justify-content: center;
+        gap: 2.5rem;
+      }
+      .nav-links.open a { font-size: 1.1rem; }
+      .form-row { grid-template-columns: 1fr; }
+      .works-grid { grid-template-columns: 1fr; }
+      .work-card:nth-child(1) { grid-column: span 1; }
+      footer { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- Navigation -->
+  <nav id="navbar">
+    <div class="nav-logo">Minty<span>Tech</span></div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#services">サービス</a></li>
+      <li><a href="#about">コンセプト</a></li>
+      <li><a href="#process">フロー</a></li>
+      <li><a href="#works">実績</a></li>
+      <li><a href="#contact">お問合せ</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta">GET STARTED</a>
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section id="hero">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <div class="hero-content fade-in visible">
+      <p class="hero-tag">Web制作 & SNS運用代行</p>
+      <h1 class="hero-h1">
+        あなたのビジョンを<br>
+        <em>デジタルの</em><br>
+        <span class="choco-word">チカラ</span>へ
+      </h1>
+      <p class="hero-desc">
+        Minty Techは、おしゃれで機能的なWebサイト制作と<br>
+        効果的なSNS戦略で、あなたのブランドを次のレベルへ。
+      </p>
+      <div class="hero-btns">
+        <a href="#services" class="btn-primary">サービスを見る</a>
+        <a href="#contact" class="btn-outline">無料相談する</a>
+      </div>
+    </div>
+
+    <div class="scroll-ind">scroll</div>
+  </section>
+
+  <!-- Services -->
+  <section id="services">
+    <div class="section-tag fade-in">Services</div>
+    <h2 class="section-title fade-in">私たちの<em>サービス</em></h2>
+
+    <div class="services-grid">
+      <div class="service-card fade-in">
+        <div class="service-num">01</div>
+        <div class="service-icon">🌿</div>
+        <h3>Webサイト制作</h3>
+        <p>ビジネスの目的に合わせたオリジナルデザインのWebサイトを制作します。モバイルファースト・SEO対応・高速表示にこだわった品質。</p>
+        <div class="service-tags">
+          <span>HTML/CSS</span><span>WordPress</span><span>LP</span><span>EC</span>
+        </div>
+      </div>
+      <div class="service-card fade-in">
+        <div class="service-num">02</div>
+        <div class="service-icon">🍫</div>
+        <h3>SNS運用代行</h3>
+        <p>Instagram・X・TikTok等のSNSを戦略的に運用。コンテンツ企画からデザイン、投稿、分析レポートまで一括サポート。</p>
+        <div class="service-tags">
+          <span>Instagram</span><span>X</span><span>TikTok</span><span>LINE</span>
+        </div>
+      </div>
+      <div class="service-card fade-in">
+        <div class="service-num">03</div>
+        <div class="service-icon">✨</div>
+        <h3>ブランディング支援</h3>
+        <p>ロゴ・カラーパレット・トンマナ設定など、ブランドの世界観を統一。デジタル全体で一貫したイメージを構築します。</p>
+        <div class="service-tags">
+          <span>ロゴ</span><span>CI/VI</span><span>ガイドライン</span>
+        </div>
+      </div>
+      <div class="service-card fade-in">
+        <div class="service-num">04</div>
+        <div class="service-icon">📊</div>
+        <h3>広告運用・SEO</h3>
+        <p>検索エンジン最適化と有料広告の組み合わせで、ターゲット顧客への効果的なリーチを実現。成果にこだわった運用。</p>
+        <div class="service-tags">
+          <span>SEO</span><span>Meta広告</span><span>Google広告</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about">
+    <div class="about-inner">
+      <div class="about-text fade-in">
+        <div class="section-tag">About Us</div>
+        <h2 class="section-title">チョコミントのように<br><em>甘く</em>、クリエイティブに</h2>
+        <p class="about-desc">
+          Minty Techは「遊び心 × プロフェッショナル」をモットーに、クライアントの想いをデジタルで表現します。単なる制作会社ではなく、ビジネス成長のパートナーとして伴走します。
+        </p>
+        <div class="about-stats">
+          <div class="stat">
+            <div class="stat-num">150<span>+</span></div>
+            <div class="stat-label">PROJECTS DONE</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">98<span>%</span></div>
+            <div class="stat-label">SATISFACTION</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">3<span>年</span></div>
+            <div class="stat-label">EXPERIENCE</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">24<span>h</span></div>
+            <div class="stat-label">SUPPORT</div>
+          </div>
+        </div>
+      </div>
+      <div class="about-visual fade-in">
+        <div class="choco-card choco-card-1">
+          <div class="card-icon">🌿</div>
+          <h4>デザインファースト</h4>
+          <p>見た目の美しさと使いやすさを両立。ユーザーが思わず触れたくなるデザインを追求します。</p>
+        </div>
+        <div class="choco-card choco-card-2">
+          <div class="card-icon">🍫</div>
+          <h4>結果にコミット</h4>
+          <p>おしゃれなだけでなく、ビジネスゴールの達成を最優先。数字で語れる成果をお届けします。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Process -->
+  <section id="process">
+    <div class="section-tag fade-in">How We Work</div>
+    <h2 class="section-title fade-in">シンプルな<em>制作フロー</em></h2>
+
+    <div class="process-steps">
+      <div class="step fade-in">
+        <div class="step-dot">01</div>
+        <div>
+          <h4>ヒアリング</h4>
+          <p>ご要望・目標・ターゲットを丁寧にお聞きします</p>
+        </div>
+      </div>
+      <div class="step fade-in">
+        <div class="step-dot">02</div>
+        <div>
+          <h4>提案・設計</h4>
+          <p>戦略とデザイン方針をご提案します</p>
+        </div>
+      </div>
+      <div class="step fade-in">
+        <div class="step-dot">03</div>
+        <div>
+          <h4>制作・開発</h4>
+          <p>承認後、高品質な成果物を制作します</p>
+        </div>
+      </div>
+      <div class="step fade-in">
+        <div class="step-dot">04</div>
+        <div>
+          <h4>納品・公開</h4>
+          <p>チェック後に公開。その後もサポートします</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Works -->
+  <section id="works">
+    <div class="section-tag fade-in">Portfolio</div>
+    <h2 class="section-title fade-in">制作<em>実績</em></h2>
+
+    <div class="works-grid">
+      <div class="work-card fade-in">
+        <div class="work-bg"><div class="work-placeholder">🌿</div></div>
+        <span class="work-label">WEB DESIGN</span>
+        <div class="work-overlay">
+          <div class="work-cat">Corporate Website</div>
+          <div class="work-title">ブランドサイトリニューアル</div>
+        </div>
+      </div>
+      <div class="work-card fade-in">
+        <div class="work-bg"><div class="work-placeholder">🍫</div></div>
+        <span class="work-label">SNS</span>
+        <div class="work-overlay">
+          <div class="work-cat">Instagram運用</div>
+          <!--<div class="work-title">フォロワー5,000→20,000達成</div>-->
+        </div>
+      </div>
+      <div class="work-card fade-in">
+        <div class="work-bg"><div class="work-placeholder">✨</div></div>
+        <span class="work-label">EC SITE</span>
+        <div class="work-overlay">
+          <div class="work-cat">EC構築</div>
+          <div class="work-title">アパレルECサイト制作</div>
+        </div>
+      </div>
+      <div class="work-card fade-in">
+        <div class="work-bg"><div class="work-placeholder">📱</div></div>
+        <span class="work-label">LP</span>
+        <div class="work-overlay">
+          <div class="work-cat">Landing Page</div>
+          <div class="work-title">CVR 2.1倍達成LP</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact">
+    <div class="contact-inner">
+      <div class="section-tag fade-in">Contact</div>
+      <h2 class="section-title fade-in">まずは<em>無料相談</em>から</h2>
+      <p class="contact-desc fade-in">
+        お気軽にご相談ください。<br>
+        ご要望をヒアリングした上で、最適なプランをご提案いたします。
+      </p>
+
+      <form class="contact-form fade-in" id="contactForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label>お名前</label>
+            <input type="text" placeholder="山田 花子" />
+          </div>
+          <div class="form-group">
+            <label>メールアドレス</label>
+            <input type="email" placeholder="hello@example.com" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>ご興味のあるサービス</label>
+          <select>
+            <option value="">選択してください</option>
+            <option>Webサイト制作</option>
+            <option>SNS運用代行</option>
+            <option>ブランディング支援</option>
+            <option>広告運用・SEO</option>
+            <option>その他・複合</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>ご相談内容</label>
+          <textarea placeholder="どんなことでもお気軽に…"></textarea>
+        </div>
+        <button type="submit" class="form-submit">送信する →</button>
+        <div class="success-msg" id="successMsg">
+          ✅ ありがとうございます！3営業日以内にご連絡いたします。
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-logo">Minty<span>Tech</span></div>
+    <div class="footer-links">
+      <a href="#services">サービス</a>
+      <a href="#about">コンセプト</a>
+      <a href="#process">フロー</a>
+      <a href="#works">実績</a>
+      <a href="#contact">お問合せ</a>
+    </div>
+    <div class="footer-copy">© 2025 Minty Tech. All rights reserved.</div>
+  </footer>
+
+  <script>
+    /* ── Custom cursor ── */
+    const cursor = document.getElementById('cursor');
+    const ring   = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    function animateCursor() {
+      cursor.style.left = mx + 'px';
+      cursor.style.top  = my + 'px';
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px';
+      ring.style.top  = ry + 'px';
+      requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+    document.querySelectorAll('a, button, .service-card, .work-card, .step').forEach(el => {
+      el.addEventListener('mouseenter', () => { cursor.style.transform = 'translate(-50%,-50%) scale(2)'; ring.style.opacity = '0.2'; });
+      el.addEventListener('mouseleave', () => { cursor.style.transform = 'translate(-50%,-50%) scale(1)'; ring.style.opacity = '0.6'; });
+    });
+
+    /* ── Hamburger ── */
+    const hamburger = document.getElementById('hamburger');
+    const navLinks  = document.getElementById('navLinks');
+    hamburger.addEventListener('click', () => { navLinks.classList.toggle('open'); });
+    navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+    /* ── Scroll fade-in ── */
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    /* ── Navbar scroll style ── */
+    window.addEventListener('scroll', () => {
+      const nav = document.getElementById('navbar');
+      nav.style.background = window.scrollY > 50
+        ? 'rgba(7,15,10,0.92)'
+        : 'rgba(11,28,18,0.7)';
+    });
+
+    /* ── Contact form ── */
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const btn = this.querySelector('.form-submit');
+      btn.textContent = '送信中…';
+      btn.style.opacity = '0.7';
+      setTimeout(() => {
+        btn.style.display = 'none';
+        document.getElementById('successMsg').style.display = 'block';
+      }, 1200);
+    });
+
+    /* ── Stagger service cards ── */
+    document.querySelectorAll('.service-card.fade-in').forEach((card, i) => {
+      card.style.transitionDelay = (i * 0.1) + 's';
+    });
+    document.querySelectorAll('.step.fade-in').forEach((step, i) => {
+      step.style.transitionDelay = (i * 0.12) + 's';
+    });
+  </script>
+</body>
+</html>
